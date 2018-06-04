@@ -1,0 +1,7 @@
+*.pyc
+.idea/
+.gitignore~
+README.md~
+*.sh
+*.sh~
+Graphs/Utils
