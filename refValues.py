@@ -2,10 +2,11 @@
 
 import networkx as nx
 import numpy as np
+import os
 
 
 def readgraph(x):
-    g = nx.read_gpickle(x)
+    g = nx.read_graphml(x)
     return g
 
 
@@ -61,3 +62,28 @@ def eigen_aisle(PHY_ses, LANDA_ses):
     for i in range(PHY_ses.shape[0]):
         phy9 = np.hstack((phy9, PHY_ses[i, 7].real))
     return phy9, landa9
+
+if __name__=="__main__":
+    path = '/home/enrique/Escritorio/60nodos_prueba'
+    files = os.listdir(path)
+    os.chdir(path)
+    phy9_list = []
+    landa9_list = []
+    for i in range(len(files)):
+        file = files[i]
+        if file.endswith('.graphml'):
+            g = readgraph(file)
+            W = wmatrix(g)
+            D = degmatrix(W)
+            L = Lmatrix(W, D)
+            PHY, LANDA = eigen(L)
+            PHY_ses, LANDA_ses = eigen_reduce(PHY, LANDA)
+            phy9, landa9 = eigen_aisle(PHY_ses, LANDA_ses)
+            phy9_list.append(phy9)
+            landa9_list.append(landa9)
+    phy9_mean = np.mean(phy9_list, axis=0)
+    landa9_mean = np.array([np.mean(landa9_list)])
+    np.savetxt('phy9_mean.txt', phy9_mean, delimiter=',')
+    np.savetxt('landa9_mean.txt', landa9_mean)
+
+
