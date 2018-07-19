@@ -1,22 +1,7 @@
 #-*- coding: utf-8 -*-
 
-import networkx as nx
 import numpy as np
 import os
-
-
-def readgraph(x):
-    g = nx.read_graphml(x)
-    return g
-
-
-def wmatrix(gph):
-    A = nx.adjacency_matrix(gph)
-    W = A.toarray()
-    W = W.astype(float)
-    peso_max = np.amax(W)
-    W = W / peso_max
-    return W
 
 
 def degmatrix(W):
@@ -30,16 +15,20 @@ def degmatrix(W):
     return D
 
 
-def Lmatrix(W, D):
-    Lnt = D - W
-    Lt = Lnt.transpose()
-    L = np.dot(Lt, Lnt)
-    L = L / 2
-    return L
+def graphLaplacian(W, D):
+    L = D - W
+    sqD = D
+    for i in range(len(sqD)):
+        if sqD[i,i] != 0:
+            sqD[i,i] = 1 / np.sqrt(sqD[i,i])
+        else:
+            sqD[i, i] = 0
+    gLap = np.dot(sqD,np.dot(L,sqD))
+    return gLap
 
 
-def eigen(L):
-    (LANDA, PHY) = np.linalg.eig(L)  # calculamos los autovalores
+def eigen(gLap):
+    (LANDA, PHY) = np.linalg.eig(gLap)  # calculamos los autovalores
     tam = PHY.shape[1]
     ind = np.argsort(LANDA)  # de menor a mayor
     #ind = ind[::-1]         # de mayor a menor
@@ -64,19 +53,18 @@ def eigen_aisle(PHY_ses, LANDA_ses):
     return phy9, landa9
 
 if __name__=="__main__":
-    path = '/home/enrique/Escritorio/60nodos_prueba'
+    path = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/Wmatrix/highConscientiousness'
     files = os.listdir(path)
     os.chdir(path)
     phy9_list = []
     landa9_list = []
     for i in range(len(files)):
         file = files[i]
-        if file.endswith('.graphml'):
-            g = readgraph(file)
-            W = wmatrix(g)
+        if file.endswith('.txt'):
+            W = np.genfromtxt(file, delimiter=",")
             D = degmatrix(W)
-            L = Lmatrix(W, D)
-            PHY, LANDA = eigen(L)
+            gLap = graphLaplacian(W, D)
+            PHY, LANDA = eigen(gLap)
             PHY_ses, LANDA_ses = eigen_reduce(PHY, LANDA)
             phy9, landa9 = eigen_aisle(PHY_ses, LANDA_ses)
             phy9_list.append(phy9)
