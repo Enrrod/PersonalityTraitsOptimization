@@ -19,7 +19,7 @@ def wmatrix(gph):
 
 
 # Obtenemos la lista de individuos que queremos procesar
-filedir = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/highOpenness.txt'
+filedir = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/lowConscientiousness.txt'
 archivo = open(filedir, "r")
 names = archivo.readlines()
 archivo.close()
@@ -45,7 +45,8 @@ for i in range(len(names)):
         '''
     except(IOError):
         missing.append(names[i])
-missingArray = np.array(missing)
 missingPath = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/' + typ + 'MissingFiles.txt'
-np.savetxt(missingPath, missingArray, delimiter=",")
+archivo = open(missingPath, 'a+')
+for i in range(len(missing)):
+    archivo.write(str(missing[i]) + '\n')
 
