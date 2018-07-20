@@ -37,9 +37,15 @@ for i in range(len(names)):
     try:
         graph = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/Graphs/sub-' + names[i] + '_ses-1_dwi_DS00071.gpickle'
         G = readgraph(graph)
+        '''
         W = wmatrix(G)
         graphName = 'Wmat_' + names[i] + '.txt'
         route = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/Wmatrix/' + typ + '/'
         np.savetxt(route + graphName, W, delimiter=',')
+        '''
     except(IOError):
         missing.append(names[i])
+missingArray = np.array(missing)
+missingPath = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/' + typ + 'MissingFiles.txt'
+np.savetxt(missingPath, missingArray, delimiter=",")
+
