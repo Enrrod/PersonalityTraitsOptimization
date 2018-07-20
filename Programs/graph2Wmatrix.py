@@ -28,7 +28,7 @@ for i in range(len(names)):
 
 # Obtenemos el tipo de individuo que buscamos
 filePart = filedir.split('/')
-typ = fileName = filePart[len(filePart) - 1]
+typ = filePart[len(filePart) - 1]
 typ = typ.rstrip('.txt')
 
 # Comprobamos también que grafos no están
