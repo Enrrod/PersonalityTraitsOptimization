@@ -149,19 +149,18 @@ def main(file,refFile):
 
 
 if __name__ == "__main__":
-    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/Wmatrix/lowOpenness'
+    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/lowOpenness'
     subjects = os.listdir(directory)
     for i in range(len(subjects)):
         name = subjects[i]
         path = directory + '/' + name + '/'
         file = path + 'Wmat_' + name + '.txt'
-        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/Wmatrix/highOpenness/phy9_mean.txt'
+        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/highOpenness/phy9_mean.txt'
         logbook, top, phy_mean = main(file, refFile)
         generation = logbook.select('gen')
         fitness_min = logbook.select('min')
         fitness_avg = logbook.select('avg')
         top_ind = top[0]
-        print("Execution time: " + str(time))
 
         w_pat = np.genfromtxt(file, delimiter=",")
         wdiff = top_ind - w_pat
