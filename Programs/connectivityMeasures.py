@@ -41,8 +41,8 @@ if __name__=="__main__":
     workbook = xls.Workbook(workbookName)
     worksheet = workbook.add_worksheet()
     row = 0
-    headers = ['ID', 'nEdges', 'meanWeight', 'stdWeight', 'avgShPath', 'avgClust', 'tree', 'leafNum', 'meanEcc',
-               'maxBC', 'TH']
+    headers = ['ID', 'nEdges', 'meanWeight', 'stdWeight', 'aisledNum', 'avgShPath', 'avgClust', 'leafNum',
+               'meanEcc', 'maxBC', 'TH']
     for i in range(len(headers)):
         worksheet.write(row, i, headers[i])
     row = row + 1
@@ -59,13 +59,21 @@ if __name__=="__main__":
             nEdges = len(weights) / 2
             meanWeight = np.mean(weights)
             stdWeight = np.std(weights)
+
+            aisledNum = 0
+            for i in range(len(D)):
+                if D[i,i] == 0:
+                    aisledNum = aisledNum + 1
             try:
                 avgPath = nx.average_shortest_path_length(G,weight='weight')    # Longitud media de camino más corto
             except (nx.NetworkXError):
-                avgPath = 'Not connected'
+                connSubG = list(nx.connected_component_subgraphs(G))
+                for i in range(len(connSubG)):
+                    if len(G.nodes()) - len(connSubG[i].nodes()) == aisledNum:
+                        CSG = connSubG[i]
+                avgPath = nx.average_shortest_path_length(CSG,weight='weight')
             avgClust = nx.average_clustering(G,weight='weight')   # Coeficiente de clustering medio
             if nx.is_tree(T):
-                tree = 'True'   # Is tree
                 nodes = list(T.nodes())
                 m = len(nodes) - 1
                 nLeaves = 0
@@ -79,12 +87,21 @@ if __name__=="__main__":
                 bcMax = np.amax(bcVal)  # Maximum betweenness centrality
                 TH = nLeaves / (2 *  (len(nodes) - 1) * bcMax)    # Tree hierarchy
             else:
-                tree = 'False'
-                leafNumber = 'Not tree'
-                meanEcc = 'Not tree'
-                bcMax = 'Not tree'
-                TH = 'Not tree'
-            results = [ID, nEdges, meanWeight, stdWeight, avgPath, avgClust, tree, leafNumber, meanEcc, bcMax, TH]
+                subT = nx.minimum_spanning_tree(CSG,weight='weight')
+                nodes = list(subT.nodes())
+                m = len(nodes) - 1
+                nLeaves = 0
+                for i in range(len(nodes)):
+                    if subT.degree(nodes[i]) == 1:
+                        nLeaves = nLeaves + 1
+                leafNumber = float(nLeaves) / m  # Leaf number
+                meanEcc = np.mean(list(nx.eccentricity(subT).values()))  # Mean eccentricity of the tree
+                bc = nx.betweenness_centrality(subT, weight='weight')
+                bcVal = list(bc.values())
+                bcMax = np.amax(bcVal)  # Maximum betweenness centrality
+                TH = nLeaves / (2 * (len(nodes) - 1) * bcMax)  # Tree hierarchy
+            results = [ID, nEdges, meanWeight, stdWeight, aisledNum, avgPath, avgClust, leafNumber, meanEcc,
+                       bcMax, TH]
             for i in range(len(results)):
                 worksheet.write(row, i, results[i])
             row = row + 1
