@@ -132,7 +132,7 @@ def main(file,refFile):
 
     logbook = tools.Logbook()
     population = toolbox.population(100)
-    NGEN = 10
+    NGEN = 2
     print("Starting optimization with " + str(NGEN) + " generations")
     for gen in range(NGEN):
         offspring = algorithms.varAnd(population, toolbox, cxpb, mutpb)
@@ -149,13 +149,13 @@ def main(file,refFile):
 
 
 if __name__ == "__main__":
-    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/lowOpenness'
+    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/lowConscientiousness'
     subjects = os.listdir(directory)
     for i in range(len(subjects)):
         name = subjects[i]
         path = directory + '/' + name + '/'
         file = path + 'Wmat_' + name + '.txt'
-        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/highOpenness/phy9_mean.txt'
+        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/highConscientiousness/phy9_mean.txt'
         logbook, top, phy_mean = main(file, refFile)
         generation = logbook.select('gen')
         fitness_min = logbook.select('min')
@@ -178,7 +178,7 @@ if __name__ == "__main__":
         lines1 = [line1[0], line2[0]]
         labs1 = [line1[0].get_label(), line2[0].get_label()]
         plt.legend(lines1, labs1, loc="upper right")
-        plt.title("cxpb= 0.6 mutpb= 0.1")
+        plt.title(name + " | cxpb= 0.6 mutpb= 0.1")
 
         plotPath = path + 'optimizationResults/optPlot.pdf'
         fitAvgPath = path + 'optimizationResults/fitAvg.csv'
@@ -188,12 +188,12 @@ if __name__ == "__main__":
         topIndPath = path + 'optimizationResults/topInd.csv'
         WdiffPath = path + 'optimizationResults/Wdiff.csv'
 
-        np.savetxt(fitAvgPath, delimiter=',')
-        np.savetxt(fitMinPath, delimiter=',')
-        np.savetxt(fitAvgRelPath, delimiter=',')
-        np.savetxt(fitMinRelPath, delimiter=',')
-        np.savetxt(topIndPath, delimiter=',')
-        np.savetxt(WdiffPath, delimiter=',')
+        np.savetxt(fitAvgPath, fitness_avg, delimiter=',')
+        np.savetxt(fitMinPath, fitness_min, delimiter=',')
+        np.savetxt(fitAvgRelPath, fitness_avg_rel, delimiter=',')
+        np.savetxt(fitMinRelPath, fitness_rel, delimiter=',')
+        np.savetxt(topIndPath, top_ind, delimiter=',')
+        np.savetxt(WdiffPath, wdiff, delimiter=',')
         plt.savefig(plotPath)
 
 
