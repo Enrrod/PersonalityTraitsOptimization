@@ -121,7 +121,7 @@ def main(file,refFile):
     toolbox.register('population', tools.initRepeat, list, toolbox.individual)
     toolbox.register('evaluate', fit_function,phy_mean=phy_mean)
     toolbox.register('mate', patchCx)
-    toolbox.register('mutate', matMutFloat, rowindpb=0.1, elemindpb=0.1,mask=mask)
+    toolbox.register('mutate', matMutFloat, rowindpb=0.1, elemindpb=0.1, mask=mask)
     toolbox.register('select', tools.selTournament, tournsize=3)
 
     mutpb = 0.1
@@ -132,7 +132,7 @@ def main(file,refFile):
 
     logbook = tools.Logbook()
     population = toolbox.population(100)
-    NGEN = 2
+    NGEN = 15000
     print("Starting optimization with " + str(NGEN) + " generations")
     for gen in range(NGEN):
         offspring = algorithms.varAnd(population, toolbox, cxpb, mutpb)
