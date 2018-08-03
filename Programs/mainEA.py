@@ -149,13 +149,13 @@ def main(file,refFile):
 
 
 if __name__ == "__main__":
-    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/lowConscientiousness'
+    directory = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/lowOpenness'
     subjects = os.listdir(directory)
     for i in range(len(subjects)):
         name = subjects[i]
         path = directory + '/' + name + '/'
         file = path + 'Wmat_' + name + '.txt'
-        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/highConscientiousness/phy9_mean.txt'
+        refFile = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/WmatrixGrouped/highOpenness/phy9_mean.txt'
         logbook, top, phy_mean = main(file, refFile)
         generation = logbook.select('gen')
         fitness_min = logbook.select('min')
