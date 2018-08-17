@@ -53,12 +53,13 @@ def eigen(gLap):
 
 
 def eigen_reduce(PHY, LANDA):
-    del_ind = np.where(LANDA <= 0)[0]
+    del_ind = np.where(LANDA <= 0.01)[0]
+    del_ind = del_ind[0:(len(del_ind) - 1)]
     LANDA = np.delete(LANDA, del_ind)
     PHY = np.delete(PHY, del_ind, 1)
-    PHY = PHY.T # Trasnsponemos para que los autovectores se almacenen en filas
-    LANDA_ses = LANDA[0:40]
-    PHY_ses = PHY[0:40]
+    PHY = PHY.T # Transponemos para que los autovectores se almacenen en filas
+    LANDA_ses = LANDA[0:41]
+    PHY_ses = PHY[0:41]
     return PHY_ses, LANDA_ses
 
 
@@ -78,17 +79,13 @@ if __name__=="__main__":
             PHY_ses, LANDA_ses = eigen_reduce(PHY, LANDA)
             eigval.append(LANDA_ses)
             eigvec.append(PHY_ses)
-    '''
     meanEigval = np.mean(eigval, axis=0)
     meanEigvec = np.mean(eigvec, axis=0)
     path = '/home/enrique/Proyectos/PersonalityTraitsOptimization/Data/DS00071/'
-    np.savetxt(path + '')
+    np.savetxt(path + 'meanEigval.txt', meanEigval, delimiter=',')
+    np.savetxt(path + 'meanEigvec.txt', meanEigvec, delimiter=',')
     
-    HAY QUE TENER CUIDADO, NO TODOS TIENEN UN VALOR MUY CERCANO A 0 PERO SIN SER 0 POR LO QUE EN ESOS SE ELIMINA EL
-    ESTADO FUNDAMENTAL. HAY QUE REVISAR COMO SE SESAGAN LOS AUTOVALORES PARA QUEDARNOS SIEMPRE CON UN PRIMER VALOR
-    FUNDAMENTAL EXACTAMENTO O APROXIMADAMENTE = 0
-    
-    '''
+
 
 
 
